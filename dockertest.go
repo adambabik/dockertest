@@ -85,6 +85,7 @@ func (d *Pool) Run(repository, tag string, env []string) (*Resource, error) {
 		},
 		HostConfig: &dc.HostConfig{
 			PublishAllPorts: true,
+			NetworkMode:     "host",
 		},
 	})
 	if err != nil {
