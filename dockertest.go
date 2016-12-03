@@ -2,12 +2,13 @@ package dockertest
 
 import (
 	"fmt"
+	"os"
+	"runtime"
+	"time"
+
 	"github.com/cenk/backoff"
 	dc "github.com/fsouza/go-dockerclient"
 	"github.com/pkg/errors"
-	"time"
-	"runtime"
-	"os"
 )
 
 // Pool represents a connection to the docker API and is used to create and remove docker images.
@@ -74,7 +75,7 @@ func (d *Pool) Run(repository, tag string, env []string) (*Resource, error) {
 		Repository: repository,
 		Tag:        tag,
 	}, dc.AuthConfiguration{}); err != nil {
-		return nil, errors.Wrap(err, "")
+		fmt.Printf("Warning: failed to pull image: %s.\n", err)
 	}
 
 	c, err := d.Client.CreateContainer(dc.CreateContainerOptions{
@@ -103,7 +104,6 @@ func (d *Pool) Run(repository, tag string, env []string) (*Resource, error) {
 		Container: c,
 	}, nil
 }
-
 
 // Purge removes a container and linked volumes from docker.
 func (d *Pool) Purge(r *Resource) error {
